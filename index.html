@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Карта установленных Figma-скилов для AI-агентов: что делает каждый, когда звать, ссылки на репозитории.">
+<meta property="og:title" content="Карта Figma-скилов">
+<meta property="og:description" content="17 скилов, 5 групп, ссылки на репозитории и связки между скилами.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗂️</text></svg>">
+<style>html,body{margin:0;padding:0;background:#EBEEF3;}</style>
+<title>Карта Figma-скилов</title>
+<style>
+  :root {
+    --paper: #EBEEF3;
+    --card: #FFFFFF;
+    --ink: #181A21;
+    --muted: #676E7D;
+    --faint: #99A0AE;
+    --line: #D9DDE6;
+    --chip-bg: #EEF1F6;
+    --chip-line: #DDE2EC;
+    --figma: #E5484D;
+    --accent: #2F62D0;
+    --mono: ui-monospace, "SF Mono", "Menlo", "Cascadia Code", "Consolas", monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  .page {
+    background:
+      linear-gradient(var(--line) 1px, transparent 1px) 0 0 / 100% 28px,
+      linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0 / 28px 100%,
+      var(--paper);
+    background-blend-mode: normal;
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    padding: clamp(20px, 5vw, 64px) clamp(16px, 4vw, 48px) 80px;
+    min-height: 100%;
+  }
+  /* soften the grid so it reads as blueprint, not graph paper */
+  .page { position: relative; }
+  .page::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(120% 80% at 50% 0%, rgba(235,238,243,0) 0%, rgba(235,238,243,.72) 68%, rgba(235,238,243,.92) 100%);
+    pointer-events: none;
+  }
+  .wrap { position: relative; max-width: 1180px; margin: 0 auto; }
+
+  /* ---- header ---- */
+  .masthead {
+    display: flex; flex-wrap: wrap; align-items: flex-end;
+    justify-content: space-between; gap: 20px;
+    padding-bottom: 22px; margin-bottom: 30px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11.5px; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--muted); margin: 0 0 10px;
+  }
+  h1 {
+    font-size: clamp(28px, 4.4vw, 44px);
+    line-height: 1.02; letter-spacing: -.02em; font-weight: 680;
+    margin: 0; text-wrap: balance; max-width: 15ch;
+  }
+  .h1-accent { color: var(--accent); }
+  .tally { display: flex; gap: 26px; }
+  .stat { text-align: right; }
+  .stat .n { font-family: var(--mono); font-size: 30px; font-weight: 600; line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .stat .l { font-size: 11.5px; letter-spacing: .04em; color: var(--muted); margin-top: 6px; text-transform: uppercase; }
+
+  /* ---- legend ---- */
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center;
+    font-size: 13px; color: var(--muted);
+    margin-bottom: 40px;
+  }
+  .legend .item { display: inline-flex; align-items: center; gap: 8px; }
+  .fbadge {
+    font-family: var(--mono); font-size: 10.5px; font-weight: 600;
+    letter-spacing: .04em; text-transform: uppercase;
+    color: var(--figma); border: 1px solid color-mix(in srgb, var(--figma) 42%, var(--line));
+    background: color-mix(in srgb, var(--figma) 8%, #fff);
+    padding: 2px 7px; border-radius: 5px; line-height: 1.3;
+  }
+  .arrowkey { font-family: var(--mono); color: var(--accent); font-weight: 600; }
+
+  /* ---- group ---- */
+  .grp { margin-bottom: 40px; }
+  .grp-head { display: flex; align-items: baseline; gap: 12px; margin: 0 0 16px; }
+  .grp-dot { width: 11px; height: 11px; border-radius: 3px; background: var(--cat); flex: none; transform: translateY(1px); }
+  .grp-head h2 { font-size: 17px; font-weight: 640; letter-spacing: -.01em; margin: 0; }
+  .grp-count { font-family: var(--mono); font-size: 12px; color: var(--faint); font-variant-numeric: tabular-nums; }
+  .grp-line { flex: 1; height: 1px; background: var(--line); align-self: center; }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(305px, 1fr)); gap: 14px; }
+
+  /* ---- card ---- */
+  .card {
+    position: relative; background: var(--card);
+    border: 1px solid var(--line); border-radius: 12px;
+    padding: 16px 16px 14px 18px; overflow: hidden;
+    display: flex; flex-direction: column; gap: 11px;
+    transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+  }
+  .card::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+    background: var(--cat);
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 10px 26px -14px rgba(24,26,33,.32); border-color: color-mix(in srgb, var(--cat) 40%, var(--line)); }
+
+  .card-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .sk-name { font-family: var(--mono); font-size: 14.5px; font-weight: 600; color: var(--ink); letter-spacing: -.01em; }
+  .sk-name .slash { color: var(--cat); }
+
+  .sk-what { margin: 0; font-size: 13.7px; line-height: 1.5; color: #34383F; }
+
+  .triggers { margin-top: auto; }
+  .tlabel { display: block; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); margin-bottom: 7px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 5px; }
+  .chip {
+    font-family: var(--mono); font-size: 11.5px; color: #3B4250;
+    background: var(--chip-bg); border: 1px solid var(--chip-line);
+    padding: 3px 8px; border-radius: 6px; line-height: 1.35; white-space: nowrap;
+  }
+
+  .card-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 10px; border-top: 1px dashed var(--line); }
+  .author { font-size: 11.5px; color: var(--muted); font-family: var(--mono); text-decoration: none; display: inline-flex; align-items: center; gap: 4px; transition: color .14s ease; }
+  .author:hover { color: var(--accent); }
+  .author .rl { font-size: 10px; opacity: .55; transition: opacity .14s ease; }
+  .author:hover .rl { opacity: 1; }
+  .pipe { font-size: 11px; color: var(--accent); font-family: var(--mono); text-align: right; }
+  .pipe b { font-weight: 600; }
+
+  /* ---- connections panel ---- */
+  .notes { margin-top: 52px; border: 1px solid var(--line); border-radius: 14px; background: color-mix(in srgb, var(--accent) 4%, #fff); overflow: hidden; }
+  .notes-head { padding: 15px 22px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 10px; }
+  .notes-head h3 { margin: 0; font-size: 14px; font-weight: 640; letter-spacing: .01em; }
+  .notes-head .k { font-family: var(--mono); font-size: 11px; color: var(--accent); }
+  .notes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+  .note { padding: 16px 22px; border-top: 1px solid var(--line); border-right: 1px solid var(--line); }
+  .note:nth-child(-n+2) { border-top: none; }
+  .note h4 { margin: 0 0 6px; font-size: 12.5px; font-family: var(--mono); color: var(--ink); font-weight: 600; }
+  .note p { margin: 0; font-size: 13px; color: #40454E; line-height: 1.5; }
+  .note code { font-family: var(--mono); font-size: 12px; background: var(--chip-bg); border: 1px solid var(--chip-line); padding: 1px 5px; border-radius: 5px; }
+  .flow { font-family: var(--mono); color: var(--accent); font-weight: 600; }
+
+  .foot { margin-top: 26px; font-size: 12px; color: var(--faint); font-family: var(--mono); text-align: center; letter-spacing: .02em; }
+
+  @media (max-width: 560px) {
+    .masthead { border-bottom-width: 1px; }
+    .tally { gap: 18px; }
+    .stat .n { font-size: 24px; }
+    .cards { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card { transition: none; }
+    .reveal { opacity: 1 !important; transform: none !important; }
+  }
+  .reveal { opacity: 0; transform: translateY(8px); animation: rise .5s cubic-bezier(.2,.7,.3,1) forwards; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="wrap">
+
+    <header class="masthead reveal">
+      <div>
+        <p class="eyebrow">Личный набор · ~/.claude/skills</p>
+        <h1>Карта <span class="h1-accent">Figma-скилов</span><br>и когда звать каждый</h1>
+      </div>
+      <div class="tally">
+        <div class="stat"><div class="n">17</div><div class="l">скилов</div></div>
+        <div class="stat"><div class="n">6</div><div class="l">официальных</div></div>
+        <div class="stat"><div class="n">5</div><div class="l">групп</div></div>
+      </div>
+    </header>
+
+    <div class="legend reveal">
+      <span class="item"><span class="fbadge">Figma</span> — официальный, By&nbsp;Figma</span>
+      <span class="item"><span class="arrowkey">→</span> связка: один скил тянет другой</span>
+      <span class="item" style="color:var(--faint)">моно-подписи внизу карточек — реальные фразы-триггеры</span>
+    </div>
+
+    <!-- ===== GROUP 1 ===== -->
+    <section class="grp reveal" style="--cat:#2F62D0">
+      <div class="grp-head"><span class="grp-dot"></span><h2>Генерация и правка макетов</h2><span class="grp-count">4</span><span class="grp-line"></span></div>
+      <div class="cards">
+
+        <article class="card">
+          <div class="card-top"><span class="sk-name"><span class="slash">/</span>figma-generate-design</span><span class="fbadge">Figma</span></div>
+          <p class="sk-what">Собирает новые экраны и страницы из <b>существующих</b> компонентов и переменных дизайн-системы — не рисует примитивы с хардкодом.</p>
+          <div class="triggers"><span class="tlabel">Когда звать</span><div class="chips"><code class="chip">«собери экран из ДС»</code><code class="chip">«запушь страницу в Figma»</code><code class="chip">build screen</code></div></div>
+          <div class="card-foot"><a class="author" href="https://developers.figma.com/docs/figma-mcp-server/skill-figma-generate-design/" target="_blank" rel="noopener">Figma <span class="rl">↗</span></a><span class="pipe"></span></div>
+        </article>
+
+        <article class="card">
+          <div class="card-top"><span class="sk-name"><span class="slash">/</span>edit-figma-design</span></div>
+          <p class="sk-what">Рисует и правит дизайн <b>из текстового описания</b>: мокап, вайрфрейм, экран, флоу. Может стартовать с чистого файла.</p>
+          <div class="triggers"><span class="tlabel">Когда звать</span><div class="chips"><code class="chip">«нарисуй мокап по описанию»</code><code class="chip">«вайрфрейм в Figma»</code></div></div>
+          <div class="card-foot"><a class="author" href="https://github.com/warpdotdev/figma-skills/tree/main/.agents/.skills/edit-figma-design" target="_blank" rel="noopener">Warp <span class="rl">↗</span></a><span class="pipe"></span></div>
+        </article>
+
+        <article class="card">
+          <div class="card-top"><span class="sk-name"><span class="slash">/</span>prototype-to-figma</span></div>
+          <p class="sk-what">Разбирает рабочий код-прототип на фреймы по флоу, кладёт компоненты ДС и аннотирует взаимодействия — делает прототип ревьюабельным.</p>
+          <div class="triggers"><span class="tlabel">Когда звать</span><div class="chips"><code class="chip">«прототип → Figma»</code><code class="chip">«handoff из кода»</code><code class="chip">«разложи по стейтам»</code></div></div>
+          <div class="card-foot"><a class="author" href="https://github.com/alima-max/prototype-to-figma-skill" target="_blank" rel="noopener">alima-max <span class="rl">↗</span></a><span class="pipe"></span></div>
+        </article>
+
+        <article class="card">
+          <div class="card-top"><span class="sk-name"><span class="slash">/</span>figma-generate-library</span><span class="fbadge">Figma</span></div>
+          <p class="sk-what">Строит компоненты и библиотеку в Figma <b>из кодовой базы</b> — варианты, состояния, привязка к переменным.</p>
+          <div class="triggers"><span class="tlabel">Когда звать</span><div class="chips"><code class="chip">«собери компоненты из кода»</code><code class="chip">«построй библиотеку»</code></div></div>
+          <div class="card-foot"><a class="author" href="https://developers.figma.com/docs/figma-mcp-server/skill-figma-generate-library/" target="_blank" rel="noopener">Figma <span class="rl">↗</span></a><span class="pipe"></span></div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ===== GROUP 2 ===== -->
+    <section class="grp reveal" style="--cat:#0E8FA6">
+      <div class="grp-head"><span class="grp-dot"></span><h2>FigJam, Slides, диаграммы и планы</h2><span class="grp-count">4</span><span class="grp-line"></span></div>
+      <div class="cards">
+
+        <article class="card">
+          <div class="card-top"><span class="sk-name"><span class="slash">/</span>figma-use-figjam</span><span class="fbadge">Figma</span></div>
+          <p class="sk-what">Работа с контентом FigJam: стикеры, секции, коннекторы, фигуры, таблицы, code-блоки.</p>
+          <div class="triggers"><span class="tlabel">Когда звать</span><div class="chips"><code class="chip">«набросай доску в FigJam»</code><code class="chip">«стикеры/секции»</code></div></div>
+          <div class="card-foot"><a class="author" href="https://developers.figma.com/docs/figma-mcp-server/skill-figma-use-figjam/" target="_blank" rel="noopener">Figma <span class="rl">↗</span></a><span class="pipe"></span></div>
+        </article>
+
+        <article class="card">
+          <div class="card-top"><span class="sk-name"><span class="slash">/</span>figma-use-slides</span><span class="fbadge">Figma</span></div>
+          <p class="sk-what">Создаёт и правит презентации в Figma Slides с сохранением существующих стилей и лейаутов.</p>
+          <div class="triggers"><span class="tlabel">Когда звать</span><div class="chips"><code class="chip">«презентация в Figma Slides»</code><code class="chip">«поправь слайды»</code></div></div>
+          <div class="card-foot"><a class="author" href="https://developers.figma.com/docs/figma-mcp-server/skill-figma-use-slides/" target="_blank" rel="noopener">Figma <span class="rl">↗</span></a><span class="pipe"></span></div>
+        </article>
+
+        <article class="card">
+          <div class="card-top"><span class="sk-name"><span class="slash">/</span>figma-generate-diagram</span><span class="fbadge">Figma</span></div>
+          <p class="sk-what">Диаграммы в FigJam через generate_diagram: архитектура, ERD, флоучарты, sequence, state.</p>
+          <div class="triggers"><span class="tlabel">Когда звать</span><div class="chips"><code class="chip">«нарисуй архитектуру»</code><code class="chip">«ERD / флоучарт»</code></div></div>
+          <div class="card-foot"><a class="author" href="https://developers.figma.com/docs/figma-mcp-server/skill-figma-generate-diagram/" target="_blank" rel="noopener">Figma <span class="rl">↗</span></a><span class="pipe"></span></div>
+        </article>
+
+        <article class="card">
+          <div class="card-top"><span class="sk-name"><span class="slash">/</span>generate-project-plan</span><span class="fbadge">Figma</span></div>
+          <p class="sk-what">Из PRD + контекста кода собирает <b>интерактивную</b> доску-план проекта в FigJam: research → секции → контент → сборка.</p>
+          <div class="triggers"><span class="tlabel">Когда звать</span><div class="chips"><code class="chip">«project plan из PRD»</code><code class="chip">«план проекта в FigJam»</code></div></div>
+          <div class="card-foot"><a class="author" href="https://github.com/figma/mcp-server-guide/tree/main/workflow-skills/generate-project-plan" target="_blank" rel="noopener">Figma <span class="rl">↗</span></a><span class="pipe"></span></div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ===== GROUP 3 ===== -->
+    <section class="grp reveal" style="--cat:#1E9E6A">
+      <div class="grp-head"><span class="grp-dot"></span><h2>Дизайн-система и spacing</h2><span class="grp-count">4</span><span class="grp-line"></span></div>
+      <div class="cards">
+
+        <article class="card">
+          <div class="card-top"><span class="sk-name"><span class="slash">/</span>apply-design-system</span></div>
+          <p class="sk-what">Связывает существующий дизайн с компонентами дизайн-системы — подключает published-компоненты вместо отвязанных слоёв.</p>
+          <div class="triggers"><span class="tlabel">Когда звать</span><div class="chips"><code class="chip">«привяжи к ДС»</code><code class="chip">«свяжи с компонентами»</code></div></div>
+          <div class="card-foot"><a class="author" href="https://github.com/edenspiekermann/Skills/tree/main/skills/apply-design-system" target="_blank" rel="noopener">Edenspiekermann <span class="rl">↗</span></a><span class="pipe"></span></div>
+        </article>
+
+        <article class="card">
+          <div class="card-top"><span class="sk-name"><span class="slash">/</span>audit-design-system</span></div>
+          <p class="sk-what">Аудит экрана/компонента на «дрейф» от ДС: недостающие shared-компоненты, локальные оверрайды, непривязанные токены.</p>
+          <div class="triggers"><span class="tlabel">Когда звать</span><div class="chips"><code class="chip">«проверь на дрейф от ДС»</code><code class="chip">«где отвязанные токены»</code></div></div>
+          <div class="card-foot"><a class="author" href="https://github.com/edenspiekermann/Skills/tree/main/skills/audit-design-system" target="_blank" rel="noopener">Edenspiekermann <span class="rl">↗</span></a><span class="pipe"><b>→</b> fix-…-finding</span></div>
+        </article>
+
+        <article class="card">
+          <div class="card-top"><span class="sk-name"><span class="slash">/</span>fix-design-system-finding</span></div>
+          <p class="sk-what">Чинит конкретную находку из аудита: подменяет на shared-компонент, снимает оверрайд, привязывает токен.</p>
+          <div class="triggers"><span class="tlabel">Когда звать</span><div class="chips"><code class="chip">«почини находку»</code><code class="chip">«убери оверрайд»</code></div></div>
+          <div class="card-foot"><a class="author" href="https://github.com/edenspiekermann/Skills/tree/main/skills/fix-design-system-finding" target="_blank" rel="noopener">Edenspiekermann <span class="rl">↗</span></a><span class="pipe"><b>←</b> audit-…-system</span></div>
+        </article>
+
+        <article class="card">
+          <div class="card-top"><span class="sk-name"><span class="slash">/</span>rad-spacing</span></div>
+          <p class="sk-what">Иерархические отступы по принципу Gestalt (близость): внешним контейнерам больше воздуха, чем внутренним. Кратно 8/4px из переменных файла.</p>
+          <div class="triggers"><span class="tlabel">Когда звать</span><div class="chips"><code class="chip">«расставь отступы по иерархии»</code><code class="chip">«наведи spacing»</code></div></div>
+          <div class="card-foot"><a class="author" href="https://github.com/nolanperk/rad-spacing" target="_blank" rel="noopener">Nolan Perkins <span class="rl">↗</span></a><span class="pipe"></span></div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ===== GROUP 4 ===== -->
+    <section class="grp reveal" style="--cat:#B9791A">
+      <div class="grp-head"><span class="grp-dot"></span><h2>Токены и контракты</h2><span class="grp-count">3</span><span class="grp-line"></span></div>
+      <div class="cards">
+
+        <article class="card">
+          <div class="card-top"><span class="sk-name"><span class="slash">/</span>cc-figma-tokens</span></div>
+          <p class="sk-what">Строит Figma-переменные (Primitives + Semantic) из token-файлов контракта. <b>Пререквизит</b> для сборки компонентов.</p>
+          <div class="triggers"><span class="tlabel">Когда звать</span><div class="chips"><code class="chip">«залей токены в Figma»</code><code class="chip">«переменные из токенов»</code></div></div>
+          <div class="card-foot"><a class="author" href="https://github.com/nvillapiano/component-contracts-figma/tree/main/skills/cc-figma-tokens" target="_blank" rel="noopener">Nick Villapiano <span class="rl">↗</span></a><span class="pipe"><b>→</b> cc-figma-component</span></div>
+        </article>
+
+        <article class="card">
+          <div class="card-top"><span class="sk-name"><span class="slash">/</span>cc-figma-component</span></div>
+          <p class="sk-what">Собирает Figma-компонент со всеми вариантами из контракта. Требует, чтобы коллекции переменных уже были залиты.</p>
+          <div class="triggers"><span class="tlabel">Когда звать</span><div class="chips"><code class="chip">«собери компонент из контракта»</code><code class="chip">«варианты в Figma»</code></div></div>
+          <div class="card-foot"><a class="author" href="https://github.com/nvillapiano/component-contracts-figma/tree/main/skills/cc-figma-component" target="_blank" rel="noopener">Nick Villapiano <span class="rl">↗</span></a><span class="pipe"><b>←</b> cc-figma-tokens</span></div>
+        </article>
+
+        <article class="card">
+          <div class="card-top"><span class="sk-name"><span class="slash">/</span>sync-figma-token</span></div>
+          <p class="sk-what">Двусторонняя синхронизация токенов код↔Figma-переменные с детекцией дрейфа между источниками.</p>
+          <div class="triggers"><span class="tlabel">Когда звать</span><div class="chips"><code class="chip">«синхронизируй токены»</code><code class="chip">«проверь дрейф токенов»</code></div></div>
+          <div class="card-foot"><a class="author" href="https://github.com/firebenders/sync-figma-token-skill" target="_blank" rel="noopener">Firebender <span class="rl">↗</span></a><span class="pipe"></span></div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ===== GROUP 5 ===== -->
+    <section class="grp reveal" style="--cat:#C24B78">
+      <div class="grp-head"><span class="grp-dot"></span><h2>Спеки, доступность и агенты</h2><span class="grp-count">2</span><span class="grp-line"></span></div>
+      <div class="cards">
+
+        <article class="card">
+          <div class="card-top"><span class="sk-name"><span class="slash">/</span>create-voice</span></div>
+          <p class="sk-what">Генерит spec для скринридеров (VoiceOver / TalkBack / ARIA) прямо в Figma: порядок фокуса, таблицы свойств по платформам, паттерны объявлений.</p>
+          <div class="triggers"><span class="tlabel">Когда звать</span><div class="chips"><code class="chip">«спека для скринридера»</code><code class="chip">VoiceOver / ARIA</code><code class="chip">accessibility spec</code></div></div>
+          <div class="card-foot"><a class="author" href="https://github.com/redongreen/uSpec/tree/main/skills/create-voice" target="_blank" rel="noopener">Ian Guisard · uSpec <span class="rl">↗</span></a><span class="pipe">часть системы uSpec</span></div>
+        </article>
+
+        <article class="card">
+          <div class="card-top"><span class="sk-name"><span class="slash">/</span>figma-augment-parallel</span></div>
+          <p class="sk-what">Гайд по Figma&nbsp;MCP + агенты Augment: реализация дизайнов, параллельные воркфлоу из файла, запись UI обратно в Figma.</p>
+          <div class="triggers"><span class="tlabel">Когда звать</span><div class="chips"><code class="chip">«Figma + Augment»</code><code class="chip">«параллельные воркфлоу»</code></div></div>
+          <div class="card-foot"><a class="author" href="https://github.com/AugmentedAJ/skills/tree/main/augment-multi-agent-figma" target="_blank" rel="noopener">Augment <span class="rl">↗</span></a><span class="pipe">карточка = /multi-agent</span></div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ===== CONNECTIONS ===== -->
+    <section class="notes reveal">
+      <div class="notes-head"><span class="k">//</span><h3>Связки и подводные камни</h3></div>
+      <div class="notes-grid">
+        <div class="note">
+          <h4>Токены → компонент</h4>
+          <p>Порядок обязателен: <span class="flow">cc-figma-tokens → cc-figma-component</span>. Пока в файле нет коллекций Primitives и Semantic, компонент не соберётся.</p>
+        </div>
+        <div class="note">
+          <h4>Аудит → починка</h4>
+          <p><span class="flow">audit-design-system → fix-design-system-finding</span>. Первый находит дрейф и приоритизирует, второй чинит конкретную находку.</p>
+        </div>
+        <div class="note">
+          <h4>Три пути «код → Figma»</h4>
+          <p><code>generate-design</code> — по дизайн-системе; <code>edit-figma-design</code> — из текста; <code>prototype-to-figma</code> — из прототипа; <code>generate-library</code> — компоненты.</p>
+        </div>
+        <div class="note">
+          <h4>/multi-agent зовётся иначе</h4>
+          <p>На карточке Figma это <code>/multi-agent</code>, но внутреннее имя — <code>figma-augment-parallel</code>. Вызывать нужно по нему.</p>
+        </div>
+        <div class="note">
+          <h4>create-voice — часть uSpec</h4>
+          <p>Умеет рендерить a11y-спеку, но на вход хочет component-<code>.md</code> из системы uSpec. Полный набор — <code>npx uspec-skills init</code>.</p>
+        </div>
+        <div class="note">
+          <h4>Две синхронизации токенов</h4>
+          <p><code>sync-figma-token</code> — двусторонняя код↔Figma с дрейфом; <code>cc-figma-tokens</code> — генерация из контракта в одну сторону.</p>
+        </div>
+      </div>
+    </section>
+
+    <p class="foot">17 скилов · 6 официальных Figma + 11 community · установлены в ~/.claude/skills</p>
+
+  </div>
+</div>
+</body>
+</html>
