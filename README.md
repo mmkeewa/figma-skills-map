@@ -1,6 +1,6 @@
 # 🗂️ Карта Figma-скилов
 
-Личный набор Figma-скилов для AI-агентов (Claude Code) — что делает каждый, **когда звать** и как они связаны.
+Набор Figma-скилов для AI-агентов (Claude Code) из [Figma Community](https://www.figma.com/community/skills) — что делает каждый, **когда звать** и как они связаны.
 
 **17 скилов · 6 официальных Figma + 11 community · 5 групп.** Установлены в `~/.claude/skills`.
 
